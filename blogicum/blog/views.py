@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse, Http404
 
+# Список постов
 posts = [
     {
         'id': 0,
@@ -43,20 +45,22 @@ posts = [
     },
 ]
 
-
-def index(request):
-    template = 'blog/index.html'
-    context = {'posts': posts[::-1]}
-    return render(request, template, context)
+# Создаем словать для быстрого доступа
+dict_posts = {post['id']: post for post in posts}
 
 
-def post_detail(request, id):
-    template = 'blog/detail.html'
-    context = {'post': posts[id]}
-    return render(request, template, context)
+def index(request: HttpRequest) -> HttpResponse:
+    return render(
+        request, 'blog/index.html', {'posts': list(dict_posts.values())[::-1]}
+    )
 
 
-def category_posts(request, category_slug):
-    template = 'blog/category.html'
-    context = {'slug': category_slug}
-    return render(request, template, context)
+def post_detail(request: HttpRequest, id: int) -> HttpResponse:
+    # Используем Raise для несуществующих постов
+    if id not in dict_posts:
+        raise Http404('Такого поста не существует.')
+    return render(request, 'blog/detail.html', {'post': dict_posts.get(id)})
+
+
+def category_posts(request: HttpRequest, category_slug: str) -> HttpResponse:
+    return render(request, 'blog/category.html', {'slug': category_slug})
