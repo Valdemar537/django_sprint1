@@ -59,7 +59,9 @@ def post_detail(request: HttpRequest, id: int) -> HttpResponse:
     # Используем Raise для несуществующих постов
     if id not in dict_posts:
         raise Http404('Такого поста не существует.')
-    return render(request, 'blog/detail.html', {'post': dict_posts.get(id)})
+    return render(
+        request, 'blog/detail.html', {'post': dict_posts.get(id)}
+    )
 
 
 def category_posts(request: HttpRequest, category_slug: str) -> HttpResponse:

@@ -4,5 +4,7 @@
 {% endblock %}
 {% block content %}
   <h1>Лента записей</h1>
-  {% include "includes/blogs.html" %}
+  {% for post in posts %}
+    {% include "includes/blogs.html" with view_text=False %}
+  {% endfor %}
 {% endblock %}
